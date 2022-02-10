@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'widgets/navbar.dart';
 import 'screens/home_screen.dart';
 import 'screens/schedule_screen.dart';
 import 'screens/companies_screen.dart';
 import 'screens/about_screen.dart';
+import 'package:sizer/sizer.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MTDApp());
 }
 
@@ -15,9 +22,12 @@ class MTDApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyContent(),
-    );
+    return Sizer(builder: (context, orientation, deviceType) {
+      return MaterialApp(
+        home: const MyContent(),
+        theme: ThemeData(fontFamily: 'Barlow'),
+      );
+    });
   }
 }
 
@@ -71,7 +81,6 @@ class _MyContentState extends State<MyContent> {
         unselectedItemColor: const Color(0xFFFFFFFF),
         currentIndex: currentIndex,
         onTap: (index) => (_pageController.jumpToPage(index)),
-
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             label: 'Hem',
@@ -90,7 +99,6 @@ class _MyContentState extends State<MyContent> {
             icon: Icon(Icons.info),
           ),
         ],
-
       ),
     );
   }

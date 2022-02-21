@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-class HomeScreen extends StatelessWidget {
+FirebaseDatabase database = FirebaseDatabase.instance;
+
+DatabaseReference events = database.ref("events");
+
+
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -62,5 +69,11 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
   }
 }

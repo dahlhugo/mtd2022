@@ -34,7 +34,6 @@ class MTDApp extends StatelessWidget {
 class MyContent extends StatefulWidget {
   const MyContent({Key? key}) : super(key: key);
 
-  @override
   Widget build(BuildContext context) {
     final PageController controller = PageController();
     return PageView(

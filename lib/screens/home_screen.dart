@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:mtd2022/models/events.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final database = FirebaseDatabase.instance.ref();
 
   String glBannerImage = "";
+  var lists = [];
 
   @override
   void initState() {
@@ -35,6 +37,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return;
   }
 
+  void testDB() {
+    database
+        .child('events')
+        .orderByKey()
+        .limitToFirst(3)
+        .get()
+        .then((value) => print(value.value));
+  }
+
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
@@ -44,64 +55,69 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // ignore: todo
           //TODO: fix glBannerImage is "" when initiliazed
-          // const Text("MTD 2022"),
-          // SizedBox(
-          //   width: 100.0.w,
-          //   height: 30.0.h,
-          //   child: ClipRRect(
-          //     borderRadius: BorderRadius.circular(12),
-          //     child: Material(
-          //       child: Ink.image(
-          //         fit: BoxFit.fill,
-          //         image: NetworkImage(glBannerImage),
-          //         child: InkWell(
-          //           onTap: () {
-          //             _launchURL(context, "https://massa.medieteknikdagen.se");
-          //           },
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          const Text("MTD 2022"),
+          SizedBox(
+            width: 100.0.w,
+            height: 30.0.h,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Material(
+                child: Ink.image(
+                  fit: BoxFit.fill,
+                  image: NetworkImage(glBannerImage),
+                  child: InkWell(
+                    onTap: () {
+                      _launchURL(context, "https://massa.medieteknikdagen.se");
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
 
-          // Wrap(
-          //   direction: Axis.vertical,
-          //   spacing: 20,
-          //   children: [
-          //     const Spacer(),
-          //     const Text('Uppkommande Event'),
-          //     Container(
-          //       width: 90.0.w,
-          //       height: 12.0.h,
-          //       decoration: BoxDecoration(
-          //         color: Colors.green[500],
-          //         borderRadius: const BorderRadius.all(
-          //           Radius.circular(12.0),
-          //         ),
-          //       ),
-          //     ),
-          //     Container(
-          //       width: 90.0.w,
-          //       height: 12.0.h,
-          //       decoration: BoxDecoration(
-          //         color: Colors.green[400],
-          //         borderRadius: const BorderRadius.all(
-          //           Radius.circular(12.0),
-          //         ),
-          //       ),
-          //     ),
-          //     Container(
-          //       width: 90.0.w,
-          //       height: 12.0.h,
-          //       decoration: BoxDecoration(
-          //         color: Colors.green[300],
-          //         borderRadius: const BorderRadius.all(
-          //           Radius.circular(12.0),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          //)
+          //TODO: future builder for getting once.
+
+          StreamBuilder(
+              stream:
+                  database.child('events').orderByKey().limitToFirst(3).onValue,
+              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                final tilesList = <Card>[];
+
+                if (snapshot.hasData &&
+                    !snapshot.hasError &&
+                    snapshot.data!.snapshot.value != null) {
+                  final myEvents = Map<String, dynamic>.from(
+                      snapshot.data!.snapshot.value as Map);
+
+                  myEvents.forEach((key, value) {
+                    print(value["name"]);
+                  });
+
+                  tilesList.addAll(myEvents.values.map((value) {
+                    final nextEvent =
+                        MtdEvent.fromRTDB(Map<String, dynamic>.from(value));
+
+                    return Card(
+                      child: ListTile(
+                        leading: Container(
+                          color: Colors.amber[900],
+                          width: 48,
+                          height: 48,
+                        ),
+                        title: Text(nextEvent.name),
+                        subtitle: Text(nextEvent.description),
+                      ),
+                    );
+                  }));
+                  return Expanded(
+                    child: ListView(
+                      children: tilesList,
+                    ),
+                  );
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
         ],
       ),
     );

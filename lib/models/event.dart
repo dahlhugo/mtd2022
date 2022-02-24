@@ -15,10 +15,10 @@ class MtdEvent {
 
   factory MtdEvent.fromRTDB(Map<String, dynamic> data) {
     return MtdEvent(
-        name: data['name'],
-        type: data['type'],
-        place: data['place'],
-        description: data['description'],
-        date: DateTime.fromMillisecondsSinceEpoch(data['date']));
+        name: data['name'] ?? "",
+        type: data['type'] ?? "",
+        place: data['place'] ?? "",
+        description: data['description'] ?? "",
+        date: DateTime.parse(data['date']));
   }
 }

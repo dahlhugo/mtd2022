@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
-import 'screens/schedule_screen.dart';
 import 'screens/companies_screen.dart';
 import 'screens/about_screen.dart';
 import 'package:sizer/sizer.dart';
@@ -26,7 +24,7 @@ class MTDApp extends StatelessWidget {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: const MyContent(),
-        theme: ThemeData(fontFamily: 'Barlow'),
+        theme: ThemeData(primaryColor: Colors.white, fontFamily: 'Barlow'),
       );
     });
   }
@@ -66,11 +64,9 @@ class _MyContentState extends State<MyContent> {
         child: PageView(
           controller: _pageController,
           onPageChanged: (index) => (changePage(index)),
-          children: const <Widget>[
-            HomeScreen(),
-            ScheduleScreen(),
+          children: <Widget>[
+            const AboutScreen(),
             CompaniesScreen(),
-            AboutScreen(),
           ],
         ),
       ),
@@ -83,20 +79,12 @@ class _MyContentState extends State<MyContent> {
         onTap: (index) => (_pageController.jumpToPage(index)),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            label: 'Hem',
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: 'Schema',
-            icon: Icon(Icons.calendar_month),
+            label: 'Om MTD',
+            icon: Icon(Icons.info),
           ),
           BottomNavigationBarItem(
             label: 'Företag',
             icon: Icon(Icons.business),
-          ),
-          BottomNavigationBarItem(
-            label: 'Om MTD',
-            icon: Icon(Icons.info),
           ),
         ],
       ),
